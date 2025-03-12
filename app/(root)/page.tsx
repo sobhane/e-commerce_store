@@ -1,8 +1,8 @@
 
-
-export default function Home() {
+export default async function  Home() {
+  
   return (
-    <div >
+    <div>
       <h1>My Store</h1>
     </div>
   );
