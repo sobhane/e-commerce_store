@@ -20,7 +20,7 @@ const Menu = () => {
             <ShoppingCart /> Cart
           </Link>
         </Button>
-        <Button asChild>
+        <Button asChild >
           <Link href={`/sign-in`}>
             <UserIcon /> Sign In
           </Link>
