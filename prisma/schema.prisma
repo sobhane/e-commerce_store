@@ -14,20 +14,22 @@ datasource db {
 }
 
 model Product {
-  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name         String
-  slug         String   @unique(map: "product_slug_idx")
-  images       String[]
-  Footballteam String
-  description  String
-  stock        Float
-  price        Decimal  @default(0) @db.Decimal(12, 2)
-  rating       Decimal  @default(0) @db.Decimal(3, 2)
-  numReviews   Int      @default(0)
-  isFeatured   Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  banner       String?
-  updatedAt    DateTime @updatedAt
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  slug        String   @unique(map: "product_slug_idx")
+  images      String[]
+  // Footballteam String
+  description String
+  category    String
+  stock       Float
+  price       Decimal  @default(0) @db.Decimal(12, 2)
+  rating      Decimal  @default(0) @db.Decimal(3, 2)
+  numReviews  Int      @default(0)
+  isFeatured  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  brand       String
+  banner      String?
+  updatedAt   DateTime @updatedAt
 }
 
 model User {
