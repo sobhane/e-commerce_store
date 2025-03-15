@@ -4,7 +4,7 @@ const ProductPrice = ({
   value,
   className,
 }: {
-  value: number;
+  value: string;
   className?: string;
 }) => {
   //Ensure two decimal places
