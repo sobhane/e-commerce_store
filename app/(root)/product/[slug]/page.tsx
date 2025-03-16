@@ -5,6 +5,7 @@ import { getProductBySlug } from "@/lib/actions/product.actions";
 import { notFound } from "next/navigation";
 import ProductPrice from "@/components/shared/product/product-price";
 import ProductImages from "@/components/shared/product/product-images";
+import { Phone } from "lucide-react";
 
 const ProductDetailPage = async (props: {
   params: Promise<{ slug: string }>;
@@ -70,6 +71,21 @@ const ProductDetailPage = async (props: {
                 )}
               </CardContent>
             </Card>
+            <div className="md:mt-72 sm:mt-10">
+              <h1>WhatsApp:</h1>
+              <a href="https://wa.me/212664455211" target="_blank" >
+                <div className="bg-green-500 rounded p-3 flex justify-center">
+                  <Phone />
+                  <p>+212 664-455-211</p>
+                </div>
+              </a>
+              <a href="https://wa.me/">
+                <div className="bg-green-500 rounded p-3 mt-4 flex justify-center">
+                  <Phone />
+                  <p>+212 XXX-XXX-XXX</p>
+                </div>
+              </a>
+            </div>
           </div>
         </div>
       </section>
