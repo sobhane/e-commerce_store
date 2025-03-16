@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { APP_DESCRIPTION, APP_NAME, APP_URL } from "@/lib/constants";
 import { ThemeProvider } from "next-themes";
-
+import { Analytics } from "@vercel/analytics/react"
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -28,6 +28,7 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+        <Analytics/>
       </body>
     </html>
   );
