@@ -30,15 +30,15 @@ const ProductDetailPage = async (props: {
                 {product.brand} {product.category}
               </p>
               <h1 className="h3-bold">{product.name}</h1>
-              <p>
-                {product.rating} of {product.numReviews} Reviews
-              </p>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-center gap-3">
                 <ProductPrice
                   value={product.price}
                   className="w-25 bg-green-200 text-green-700 rounded-full px-5 py-2"
                 />
               </div>
+              <p>
+                {product.rating} of {product.numReviews} Reviews
+              </p>
             </div>
             <div className="mt-10">
               <p className="font-semibold">Description</p>
@@ -71,18 +71,18 @@ const ProductDetailPage = async (props: {
                 )}
               </CardContent>
             </Card>
-            <div className="md:mt-72 sm:mt-10">
-              <h1>WhatsApp:</h1>
-              <a href="https://wa.me/212664455211" target="_blank" >
+            <div className="md:mt-72 mt-10">
+              <h1 className="sm:h3-bold ">Pour passer la commande sur WhatsApp:</h1>
+              <a href="https://wa.me/212664455211" target="_blank">
                 <div className="bg-green-500 rounded p-3 flex justify-center">
                   <Phone />
                   <p>+212 664-455-211</p>
                 </div>
               </a>
-              <a href="https://wa.me/">
+              <a href="https://wa.me/212680610018" target="_blank">
                 <div className="bg-green-500 rounded p-3 mt-4 flex justify-center">
                   <Phone />
-                  <p>+212 XXX-XXX-XXX</p>
+                  <p>+212 680-610-018</p>
                 </div>
               </a>
             </div>
