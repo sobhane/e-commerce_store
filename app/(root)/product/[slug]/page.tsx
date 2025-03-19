@@ -71,8 +71,10 @@ const ProductDetailPage = async (props: {
                 )}
               </CardContent>
             </Card>
-            <div className="md:mt-72 mt-10">
-              <h1 className="sm:h3-bold ">Pour passer la commande sur WhatsApp:</h1>
+            <div className="mt-10">
+              <h1 className="font-bold text-lg md:text-base">
+                Pour passer la commande sur WhatsApp:
+              </h1>
               <a href="https://wa.me/212664455211" target="_blank">
                 <div className="bg-green-500 rounded p-3 flex justify-center">
                   <Phone />

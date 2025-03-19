@@ -1,0 +1,6 @@
+@media (min-width: 640px) {
+    .sm\:h3-bold {
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+        font-weight: 700;
+    }

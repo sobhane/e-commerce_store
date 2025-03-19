@@ -58,7 +58,6 @@ export const config = {
       //Set he user ID from the token
       
       session.user.id = token.sub as string;
-
       //If there is an update, set the user name
       if (trigger === "update") {
         session.user.name = user.name;
