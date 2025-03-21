@@ -11,10 +11,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserIcon } from "lucide-react";
 
-
 const UserButton = async () => {
   const session = await auth();
-
+ 
   if (!session) {
     return (
       <Button asChild>
@@ -52,12 +51,11 @@ const UserButton = async () => {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuItem className="p-0 mb-1">
-            <form action={signOutUser} className="w-full">
+            <form className="w-full">
               <Button
                 className="w-full py-4 px-2 h-4 justify-start"
                 variant="ghost"
-                type="submit"
-                
+                onClick={signOutUser}
               >
                 Sign Out
               </Button>
