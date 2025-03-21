@@ -1,44 +1,44 @@
-import NextAuth from "next-auth";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/db/prisma";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { compareSync } from "bcrypt-ts-edge";
-import type { NextAuthConfig } from "next-auth";
+import NextAuth from 'next-auth';
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import { prisma } from '@/db/prisma';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { compareSync } from 'bcrypt-ts-edge';
+import type { NextAuthConfig } from 'next-auth';
 
 export const config = {
   pages: {
-    signIn: "/sign-in",
-    error: "/sign-in",
+    signIn: '/sign-in',
+    error: '/sign-in',
   },
   session: {
-    strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60,
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       credentials: {
-        email: { label: "email", type: "email" },
-        password: { label: "Password", type: "password" },
+        email: { type: 'email' },
+        password: { type: 'password' },
       },
-      async authorize(credentials, request) {
+      async authorize(credentials) {
         if (credentials == null) return null;
 
-        //Find user in database
+        // Find user in database
         const user = await prisma.user.findFirst({
           where: {
             email: credentials.email as string,
           },
         });
 
-        //Check if user exists and if the password matches
+        // Check if user exists and if the password matches
         if (user && user.password) {
           const isMatch = compareSync(
             credentials.password as string,
             user.password
           );
-          //if password is correct, return user
 
+          // If password is correct, return user
           if (isMatch) {
             return {
               id: user.id,
@@ -48,20 +48,21 @@ export const config = {
             };
           }
         }
-        //if user does not exists and if the password doesn't matches
+        // If user does not exist or password does not match return null
         return null;
       },
     }),
   ],
   callbacks: {
-    async session({ session, token, user, trigger }) {
-      //Set he user ID from the token
-      
-      session.user.id = token.sub as string;
-      //If there is an update, set the user name
-      if (trigger === "update") {
+    async session({ session, user, trigger, token }: any) {
+      // Set the user ID from the token
+      session.user.id = token.sub;
+
+      // If there is an update, set the user name
+      if (trigger === 'update') {
         session.user.name = user.name;
       }
+
       return session;
     },
   },

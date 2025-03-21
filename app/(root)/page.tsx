@@ -1,15 +1,14 @@
-import ProductList from "@/components/shared/product/product-list";
-import sampleData from "@/db/sample-data";
-import { getLatestProducts } from "@/lib/actions/product.actions";
-import { LATEST_PRODUCTS_LIMIT } from "@/lib/constants";
+import ProductList from '@/components/shared/product/product-list';
+import { getLatestProducts } from '@/lib/actions/product.actions';
 
-export default async function Home() {
-  const product = await getLatestProducts();
+const Homepage = async () => {
+  const latestProducts = await getLatestProducts();
 
   return (
-    <div>
-      <h1>Home</h1>
-      <ProductList data={product} title="Newest Arrivals" limit={LATEST_PRODUCTS_LIMIT} />
-    </div>
+    <>
+      <ProductList data={latestProducts} title='Newest Arrivals' limit={4} />
+    </>
   );
-}
+};
+
+export default Homepage;

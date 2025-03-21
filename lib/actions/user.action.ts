@@ -28,5 +28,6 @@ export async function signInWihCredentials(
 //Sign user out
 
 export async function signOutUser() {
+  console.log(1)
   await signOut();
 }
