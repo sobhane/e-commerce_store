@@ -59,7 +59,6 @@ export const config = {
       session.user.id = token.sub;
       session.user.role = token.role;
       session.user.name = token.name;
-      console.log(token)
 
       // If there is an update, set the user name
       if (trigger === "update") {
@@ -68,9 +67,11 @@ export const config = {
 
       return session;
     },
-    async jwt({ token, user, profile }): any {
+    async jwt({ token, user }: { user: any; token: any }): Promise<any> {
       // Persist the OAuth access_token and or the user id to the token right after signin
-      console.log(user)
+      console.log(user);
+      // console.log(account);
+      // console.log(profile);
       if (user) {
         token.role = user.role;
 
