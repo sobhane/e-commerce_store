@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import ProductPrice from "@/components/shared/product/product-price";
 import ProductImages from "@/components/shared/product/product-images";
 import { Phone } from "lucide-react";
+import AddToCard from "@/components/shared/product/add-to-cart"
 
 const ProductDetailPage = async (props: {
   params: Promise<{ slug: string }>;
@@ -66,7 +67,14 @@ const ProductDetailPage = async (props: {
                 </div>
                 {product.stock > 0 && (
                   <div className="flex-center">
-                    <Button className="w-full">add to card</Button>
+                    <AddToCard item={{
+                      productId: product.id,
+                      name: product.name,
+                      slug: product.slug,
+                      qty: 1,
+                      image: product.images![0],
+                      price: product.price
+                    }} />
                   </div>
                 )}
               </CardContent>
