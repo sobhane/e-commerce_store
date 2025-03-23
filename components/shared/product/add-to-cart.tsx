@@ -3,14 +3,14 @@
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Plus, Minus } from "lucide-react";
-import { CartItem } from "@/types";
+import { CartItemSchema } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { addItemToCart } from "@/lib/actions/cart.action";
 import { useTheme } from "next-themes";
 
 
-const AddToCart = ({ item }: { item: CartItem }) => {
+const AddToCart = ({ item }: { item: CartItemSchema }) => {
   const { theme } = useTheme();
   let stylecss = "";
 
