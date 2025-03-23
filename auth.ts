@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/db/prisma";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compareSync } from "bcrypt-ts-edge";
 import type { NextAuthConfig } from "next-auth";
-
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 export const config = {
   pages: {
     signIn: "/sign-in",
@@ -69,9 +71,7 @@ export const config = {
     },
     async jwt({ token, user }: { user: any; token: any }): Promise<any> {
       // Persist the OAuth access_token and or the user id to the token right after signin
-      console.log(user);
-      // console.log(account);
-      // console.log(profile);
+
       if (user) {
         token.role = user.role;
 
@@ -89,6 +89,19 @@ export const config = {
         });
       }
       return token;
+    },
+    async authorized({ request, auth }) {
+      // Check for session cart cookie
+      if (!request.cookies.get("sessionCartId")) {
+        // Generate new session cart id cookie
+        const sessionCartId = crypto.randomUUID();
+        console.log(sessionCartId);
+        // request.cookies.set("sessionCartId", sessionCartId)
+
+        return true;
+      } else {
+        return true;
+      }
     },
   },
 } satisfies NextAuthConfig;

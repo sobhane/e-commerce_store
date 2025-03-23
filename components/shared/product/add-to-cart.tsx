@@ -8,10 +8,9 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { addItemToCart } from "@/lib/actions/cart.action";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+
 
 const AddToCart = ({ item }: { item: CartItem }) => {
-  // const [style, setStyle] = useState("");
   const { theme } = useTheme();
   let stylecss = "";
 
