@@ -8,6 +8,8 @@ import ProductImages from "@/components/shared/product/product-images";
 import { Phone } from "lucide-react";
 import AddToCard from "@/components/shared/product/add-to-cart";
 import { getMyCart } from "@/lib/actions/cart.action";
+import { useTransition } from "react";
+
 
 const ProductDetailPage = async (props: {
   params: Promise<{ slug: string }>;
@@ -62,7 +64,7 @@ const ProductDetailPage = async (props: {
                 <div className="mb-2 flex justify-between">
                   <div>Status</div>
                   <Badge
-                    variant={product.stock > 0 ? "default" : "destructive"}
+                    variant={product.stock > 0 ? "outline" : "destructive"}
                   >
                     {product.stock > 0 ? <p>In stock</p> : <p>Out Of Stock</p>}
                   </Badge>

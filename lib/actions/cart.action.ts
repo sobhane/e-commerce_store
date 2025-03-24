@@ -1,5 +1,5 @@
 "use server";
-import { CartItemSchema, CartSchema } from "@/types";
+import { CartItemSchema } from "@/types";
 import { cookies } from "next/headers";
 import { formatErrors, prismaToJS, round2 } from "../utils";
 import { auth } from "@/auth";
