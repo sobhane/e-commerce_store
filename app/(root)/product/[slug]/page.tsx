@@ -1,17 +1,19 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { getProductBySlug } from "@/lib/actions/product.actions";
 import { notFound } from "next/navigation";
 import ProductPrice from "@/components/shared/product/product-price";
 import ProductImages from "@/components/shared/product/product-images";
 import { Phone } from "lucide-react";
-import AddToCard from "@/components/shared/product/add-to-cart"
+import AddToCard from "@/components/shared/product/add-to-cart";
+import { getMyCart } from "@/lib/actions/cart.action";
 
 const ProductDetailPage = async (props: {
   params: Promise<{ slug: string }>;
 }) => {
   const { slug } = await props.params;
+  const cart = await getMyCart();
 
   const product = await getProductBySlug(slug);
   if (!product) notFound();
@@ -67,14 +69,17 @@ const ProductDetailPage = async (props: {
                 </div>
                 {product.stock > 0 && (
                   <div className="flex-center">
-                    <AddToCard item={{
-                      productId: product.id,
-                      name: product.name,
-                      slug: product.slug,
-                      qty: 1,
-                      image: product.images![0],
-                      price: product.price
-                    }} />
+                    <AddToCard
+                      cart={cart}
+                      item={{
+                        productId: product.id,
+                        name: product.name,
+                        slug: product.slug,
+                        qty: 1,
+                        image: product.images![0],
+                        price: product.price,
+                      }}
+                    />
                   </div>
                 )}
               </CardContent>

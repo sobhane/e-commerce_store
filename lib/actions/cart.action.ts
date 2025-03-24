@@ -130,7 +130,7 @@ export async function getMyCart() {
     itemsPrice: cart.itemsPrice.toString(),
     shippingPrice: cart.shippingPrice.toString(),
     totalPrice: cart.totalPrice.toString(),
-  });
+  })  ;
 }
 
 export async function removeItemFromCart(productId: string) {
@@ -146,7 +146,7 @@ export async function removeItemFromCart(productId: string) {
 
     if (!product) throw new Error("Product not found");
 
-    //Get usr cart from database
+    //Get user cart from database
     const cart = await getMyCart();
     if (!cart) throw new Error("Cart not found");
 

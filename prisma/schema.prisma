@@ -98,7 +98,7 @@ model VerificationToken {
 model Cart {
   id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId        String?  @map("user_id") @db.Uuid
-  sessionCartId String?
+  sessionCartId String
   items         Json[]   @default([]) @db.Json
   itemsPrice    Decimal  @default(0) @db.Decimal(12, 2)
   totalPrice    Decimal  @default(0) @db.Decimal(12, 2)
