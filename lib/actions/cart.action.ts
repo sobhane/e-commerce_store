@@ -102,7 +102,6 @@ export async function addItemToCart(data: CartItemSchema) {
         } cart`,
       };
     }
-
   } catch (error) {
     console.log(error);
     return { success: false, message: formatErrors(error) };
@@ -132,4 +131,55 @@ export async function getMyCart() {
     shippingPrice: cart.shippingPrice.toString(),
     totalPrice: cart.totalPrice.toString(),
   });
+}
+
+export async function removeItemFromCart(productId: string) {
+  try {
+    //Check for cart cookie
+    const sessionCartId = (await cookies()).get("sessionCartId")?.value;
+    if (!sessionCartId) throw new Error("Cart not found");
+
+    //Get product from database
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product) throw new Error("Product not found");
+
+    //Get usr cart from database
+    const cart = await getMyCart();
+    if (!cart) throw new Error("Cart not found");
+
+    //Check if item exists in cart
+    const exist = (cart.items as CartItemSchema[]).find(
+      (x) => x.productId === productId
+    );
+    if (!exist) throw new Error("Item not found in cart");
+
+    if (exist.qty === 1) {
+      //Remove from cart
+      cart.items = (cart.items as CartItemSchema[]).filter(
+        (x) => x.productId !== productId
+      );
+    } else {
+      //Decrease qty
+      (cart.items as CartItemSchema[]).find(
+        (x) => x.productId === productId
+      )!.qty = exist.qty - 1;
+    }
+    // Update cart in database
+    await prisma.cart.update({
+      where: { id: cart.id },
+      data: {
+        items: cart.items as Prisma.CartUpdateitemsInput[],
+        ...calcPrice(cart.items as CartItemSchema[]),
+      },
+    });
+
+    revalidatePath(`/product/${product.slug}`);
+
+    return { success: true, message: `${product.name} removed from cart` };
+  } catch (error) {
+    return { success: false, message: formatErrors(error) };
+  }
 }
