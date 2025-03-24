@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/db/prisma";
 import { cartSchema, insertCartSchema } from "../validators";
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 
 // Calculate cart prices
 const calcPrice = (items: CartItemSchema[]) => {
@@ -56,16 +57,52 @@ export async function addItemToCart(data: CartItemSchema) {
       await prisma.cart.create({
         data: newCart,
       });
-      
+
       //revalidate Product page
       revalidatePath(`/product/${product.slug}`);
 
-      return { success: true, message: "Item added to cart" };
-    }else{
-      
+      return { success: true, message: `${product.name} added to cart` };
+    } else {
+      const existItem = (cart.items as CartItemSchema[]).find(
+        (x) => x.productId === item.productId
+      );
+
+      if (existItem) {
+        console.log(1);
+        if (product.stock < existItem.qty + 1) {
+          throw new Error("Product out of stock");
+        }
+        (cart.items as CartItemSchema[]).find(
+          (x) => x.productId === item.productId
+        )!.qty = existItem.qty + 1;
+      } else {
+        //If item does not exist in cart
+        // Check the stock
+        if (product.stock < 1) {
+          throw new Error("Not enough stock");
+        }
+
+        // Add item to cart
+        (cart.items as CartItemSchema[]).push(item);
+      }
+      //Save cart to database
+      await prisma.cart.update({
+        where: { id: cart.id },
+        data: {
+          items: cart.items as Prisma.CartUpdateitemsInput[],
+          ...calcPrice(cart.items as CartItemSchema[]),
+        },
+      });
+      revalidatePath(`/product/${product.slug}`);
+
+      return {
+        success: true,
+        message: `${product.name} ${
+          existItem ? "updated in" : "added to"
+        } cart`,
+      };
     }
 
-    return { success: true, message: "Item added to cart" };
   } catch (error) {
     console.log(error);
     return { success: false, message: formatErrors(error) };

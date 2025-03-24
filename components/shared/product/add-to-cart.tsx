@@ -9,7 +9,6 @@ import { ToastAction } from "@/components/ui/toast";
 import { addItemToCart } from "@/lib/actions/cart.action";
 import { useTheme } from "next-themes";
 
-
 const AddToCart = ({ item }: { item: CartItemSchema }) => {
   const { theme } = useTheme();
   let stylecss = "";
@@ -38,7 +37,7 @@ const AddToCart = ({ item }: { item: CartItemSchema }) => {
     }
     toast({
       title: "Added to cart",
-      description: `${item.name} has been added to cart`,
+      description: res.message,
       duration: 5000,
       action: (
         <ToastAction
