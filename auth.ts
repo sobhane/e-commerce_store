@@ -90,19 +90,7 @@ export const config = {
       }
       return token;
     },
-    async authorized({ request, auth }) {
-      // Check for session cart cookie
-      if (!request.cookies.get("sessionCartId")) {
-        // Generate new session cart id cookie
-        const sessionCartId = crypto.randomUUID();
-        console.log(sessionCartId);
-        // request.cookies.set("sessionCartId", sessionCartId)
-
-        return true;
-      } else {
-        return true;
-      }
-    },
+    
   },
 } satisfies NextAuthConfig;
 

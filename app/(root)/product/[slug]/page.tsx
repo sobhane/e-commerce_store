@@ -8,7 +8,6 @@ import ProductImages from "@/components/shared/product/product-images";
 import { Phone } from "lucide-react";
 import AddToCard from "@/components/shared/product/add-to-cart";
 import { getMyCart } from "@/lib/actions/cart.action";
-import { useTransition } from "react";
 
 
 const ProductDetailPage = async (props: {
