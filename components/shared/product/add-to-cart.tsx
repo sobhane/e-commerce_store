@@ -10,7 +10,6 @@ import { useTheme } from "next-themes";
 import { addItemToCart, removeItemFromCart } from "@/lib/actions/cart.action";
 import { useTransition } from "react";
 
-
 const AddToCart = ({
   item,
   cart,
@@ -45,6 +44,7 @@ const AddToCart = ({
           duration: 5000,
           variant: "destructive",
         });
+        return;
       }
       toast({
         title: "Added to cart",
@@ -74,9 +74,10 @@ const AddToCart = ({
           duration: 5000,
           variant: "destructive",
         });
+        return;
       }
       toast({
-        title: "Added to cart",
+        title: "removed from cart",
         description: res.message,
         duration: 5000,
         action: (
