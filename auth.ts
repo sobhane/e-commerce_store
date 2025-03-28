@@ -97,16 +97,12 @@ export const config = {
             const sessionCart = await prisma.cart.findFirst({
               where: { sessionCartId },
             });
-            console.log(sessionCart);
-
-            console.log(2);
+            
             if (sessionCart) {
               //Delete current user Cart
               await prisma.cart.deleteMany({
                 where: { userId: user.id },
               });
-
-              console.log(3);
 
               await prisma.cart.update({
                 where: { id: sessionCart.id },
