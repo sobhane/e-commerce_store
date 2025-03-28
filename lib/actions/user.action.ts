@@ -96,9 +96,10 @@ export async function updateUserAddress(data: ShippingAdress) {
     }
 
     const address = shippingAdressSchema.parse(data);
+    console.log(address);
     await prisma.user.update({
       where: { id: session?.user?.id },
-      data: address,
+      data: { address },
     });
 
     return {

@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Shipping Address",
 };
 const ShippingAddressPage = async () => {
+  
   const cart = await getMyCart();
 
   if (!cart || cart.items.length === 0) {
@@ -18,7 +19,10 @@ const ShippingAddressPage = async () => {
   const session = await auth();
 
   const userId = session?.user?.id;
-  if (!userId) throw new Error("No user ID");
+
+  if (!userId) {
+    redirect(`/sign-up?callbackUrl=/cart`)
+  };
 
   const user = await getUserById(userId);
 

@@ -6,12 +6,11 @@ import { useTransition } from "react";
 import { shippingAdressSchema } from "@/lib/validators";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ControllerRenderProps, useForm } from "react-hook-form";
+import { ControllerRenderProps, useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Loader } from "lucide-react";
+import { updateUserAddress } from "@/lib/actions/user.action";
 
 const ShippingAddressForm = ({ address }: { address: ShippingAdress }) => {
   const router = useRouter();
@@ -28,17 +28,30 @@ const ShippingAddressForm = ({ address }: { address: ShippingAdress }) => {
   const form = useForm<z.infer<typeof shippingAdressSchema>>({
     resolver: zodResolver(shippingAdressSchema),
     defaultValues: address || {
-        city:"",
-        fullName:"",
-        phoneNumber:"",
-        streetAddress:""
+      city: "",
+      fullName: "",
+      phoneNumber: "",
+      streetAddress: "",
     },
   });
 
   const [isPending, startTransition] = useTransition();
-  const onSubmit = async (values:ShippingAdress) => {
-    console.log(values);
-    return;
+  const onSubmit: SubmitHandler<z.infer<typeof ShippingAdress>> = async (
+    values
+  ) => {
+    startTransition(async () => {
+      const res = await updateUserAddress(values);
+
+      if (!res.success) {
+        toast({
+          variant: "destructive",
+          description: res.message,
+        });
+        return;
+      }
+      console.log(res)
+    });
+    router.push("payment-method");
   };
   return (
     <div className="max-w-md mx-auto space-y-4">
@@ -107,7 +120,7 @@ const ShippingAddressForm = ({ address }: { address: ShippingAdress }) => {
                 >;
               }) => (
                 <FormItem>
-                  <FormLabel>Full Name</FormLabel>
+                  <FormLabel>city</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter city" {...field} />
                   </FormControl>
