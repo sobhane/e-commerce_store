@@ -25,7 +25,6 @@ export const authConfig = {
         // Set newly generated sessionCartId in the response cookie
         response.cookies.set("sessionCartId", sessionCartId);
 
-        console.log(response.headers)
         return response;
       } else {
         return true;

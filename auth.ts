@@ -6,7 +6,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { compareSync } from "bcrypt-ts-edge";
 import type { NextAuthConfig } from "next-auth";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+
 export const config = {
   pages: {
     signIn: "/sign-in",
@@ -69,10 +69,11 @@ export const config = {
 
       return session;
     },
-    async jwt({ token, user }: { user: any; token: any }): Promise<any> {
+    async jwt({ token, user, trigger, session }: any): Promise<any> {
       // Persist the OAuth access_token and or the user id to the token right after signin
 
       if (user) {
+        token.id = user.id;
         token.role = user.role;
 
         if (user.name === "NO_NAME") {
@@ -87,10 +88,42 @@ export const config = {
             name: token.name?.toString(),
           },
         });
+
+        if (trigger === "signIn" || trigger === "signUp") {
+          const cookiesObject = await cookies();
+          const sessionCartId = cookiesObject.get("sessionCartId")?.value;
+
+          if (sessionCartId) {
+            const sessionCart = await prisma.cart.findFirst({
+              where: { sessionCartId },
+            });
+            console.log(sessionCart);
+
+            console.log(2);
+            if (sessionCart) {
+              //Delete current user Cart
+              await prisma.cart.deleteMany({
+                where: { userId: user.id },
+              });
+
+              console.log(3);
+
+              await prisma.cart.update({
+                where: { id: sessionCart.id },
+                data: { userId: user.id },
+              });
+            }
+          }
+        }
       }
+
+      // handle session updates
+      if (session?.user.name && trigger === "update") {
+        token.name = session.user.name;
+      }
+
       return token;
     },
-    
   },
 } satisfies NextAuthConfig;
 
