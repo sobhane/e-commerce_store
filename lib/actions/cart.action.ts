@@ -54,7 +54,7 @@ enum sizes {
   DOUBLEXL = "DOUBLEXL",
 }
 
-export async function addItemToCart(data: CartItemSchema, size?:string) {
+export async function addItemToCart(data: CartItemSchema, size?: string) {
   try {
     //Check for cart cookie
     const sessionCartId = (await cookies()).get("sessionCartId")?.value;
@@ -170,7 +170,7 @@ export async function getMyCart() {
   });
 }
 
-export async function removeItemFromCart(productId: string, size?:string) {
+export async function removeItemFromCart(productId: string, size?: string) {
   try {
     //Check for cart cookie
     const sessionCartId = (await cookies()).get("sessionCartId")?.value;
@@ -198,19 +198,24 @@ export async function removeItemFromCart(productId: string, size?:string) {
       cart.items = (cart.items as CartItemSchema[]).filter(
         (x) => x.productId !== productId
       );
+      console.log(
+        (cart.items as CartItemSchema[]).filter(
+          (x) => x.productId !== productId
+        )
+      );
     } else {
       //Decrease qty
       (cart.items as CartItemSchema[]).find(
         (x) => x.productId === productId
       )!.qty = exist.qty - 1;
-    }
-    //
-    if (size) {
-      (cart.items as CartItemSchema[]).find(
-        (x) => x.productId === productId
-      )!.size = size as sizes;
+      if (size) {
+        (cart.items as CartItemSchema[]).find(
+          (x) => x.productId === productId
+        )!.size = size as sizes;
+      }
     }
 
+    console.log(cart.items);
     // Update cart in database
     await prisma.cart.update({
       where: { id: cart.id },

@@ -25,7 +25,7 @@ const AddToCart = ({
   item: CartItemSchema;
   cart?: CartSchema;
 }) => {
-  const [size, setSize] = useState("X");
+  const [size, setSize] = useState("");
 
   const { theme } = useTheme();
   let stylecss = "";
@@ -109,7 +109,8 @@ const AddToCart = ({
   const existItem =
     cart && cart.items.find((i) => i.productId === item.productId);
 
-  if (!size) {
+    console.log(size)
+  if (size === "") {
     return <Sizes setSize={setSize} />;
   }
   return existItem ? (
