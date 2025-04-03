@@ -8,8 +8,16 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useTheme } from "next-themes";
 import { addItemToCart, removeItemFromCart } from "@/lib/actions/cart.action";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
+import Sizes from "./Size";
 
+enum sizes {
+  S = "S",
+  M = "M",
+  L = "L",
+  XL = "XL",
+  DOUBLEXL = "DOUBLEXL",
+}
 const AddToCart = ({
   item,
   cart,
@@ -17,6 +25,8 @@ const AddToCart = ({
   item: CartItemSchema;
   cart?: CartSchema;
 }) => {
+  const [size, setSize] = useState("X");
+
   const { theme } = useTheme();
   let stylecss = "";
 
@@ -32,10 +42,12 @@ const AddToCart = ({
   const { toast } = useToast();
 
   const [isPending, startTransition] = useTransition();
-
+  if (size) {
+    item.size = size as sizes;
+  }
   const handleAddToCart = async () => {
     startTransition(async () => {
-      const res = await addItemToCart(item);
+      const res = await addItemToCart(item, size);
 
       if (!res.success) {
         toast({
@@ -66,7 +78,7 @@ const AddToCart = ({
   //Handle remove from cart
   const handleRemoveFromCart = async () => {
     startTransition(async () => {
-      const res = await removeItemFromCart(item.productId);
+      const res = await removeItemFromCart(item.productId, size);
       if (!res.success) {
         toast({
           title: "Error",
@@ -97,33 +109,46 @@ const AddToCart = ({
   const existItem =
     cart && cart.items.find((i) => i.productId === item.productId);
 
+  if (!size) {
+    return <Sizes setSize={setSize} />;
+  }
   return existItem ? (
-    <div className="flex gap-2">
-      <Button className="w-full" type="button" onClick={handleRemoveFromCart}>
-        {isPending ? (
-          <Loader className="h-4 w-4 animate-spin" />
-        ) : (
-          <Minus className="h-4 w-4" />
-        )}
-      </Button>
-      <span className="px-2">{existItem.qty}</span>
+    <>
+      <div className="my-3">
+        <Sizes setSize={setSize} />
+      </div>
+      <div className="flex gap-2">
+        <Button className="w-full" type="button" onClick={handleRemoveFromCart}>
+          {isPending ? (
+            <Loader className="h-4 w-4 animate-spin" />
+          ) : (
+            <Minus className="h-4 w-4" />
+          )}
+        </Button>
+        <span className="px-2">{existItem.qty}</span>
+        <Button className="w-full" type="button" onClick={handleAddToCart}>
+          {isPending ? (
+            <Loader className="h-4 w-4 animate-spin" />
+          ) : (
+            <Plus className="h-4 w-4" />
+          )}
+        </Button>
+      </div>
+    </>
+  ) : (
+    <>
+      <div className="my-3">
+        <Sizes setSize={setSize} />
+      </div>
       <Button className="w-full" type="button" onClick={handleAddToCart}>
         {isPending ? (
           <Loader className="h-4 w-4 animate-spin" />
         ) : (
           <Plus className="h-4 w-4" />
-        )}
+        )}{" "}
+        Add to cart
       </Button>
-    </div>
-  ) : (
-    <Button className="w-full" type="button" onClick={handleAddToCart}>
-      {isPending ? (
-        <Loader className="h-4 w-4 animate-spin" />
-      ) : (
-        <Plus className="h-4 w-4" />
-      )}{" "}
-      Add to cart
-    </Button>
+    </>
   );
 };
 

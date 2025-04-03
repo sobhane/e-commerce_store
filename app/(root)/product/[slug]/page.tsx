@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-
 import { Card, CardContent } from "@/components/ui/card";
 import { getProductBySlug } from "@/lib/actions/product.actions";
 import { notFound } from "next/navigation";
@@ -8,7 +7,6 @@ import ProductImages from "@/components/shared/product/product-images";
 import { Phone } from "lucide-react";
 import AddToCard from "@/components/shared/product/add-to-cart";
 import { getMyCart } from "@/lib/actions/cart.action";
-
 
 const ProductDetailPage = async (props: {
   params: Promise<{ slug: string }>;
@@ -69,7 +67,7 @@ const ProductDetailPage = async (props: {
                   </Badge>
                 </div>
                 {product.stock > 0 && (
-                  <div className="flex-center">
+                  <div className="flex-col justify-items-center gap-y-6">
                     <AddToCard
                       cart={cart}
                       item={{
@@ -79,6 +77,7 @@ const ProductDetailPage = async (props: {
                         qty: 1,
                         image: product.images![0],
                         price: product.price,
+                        size:"S"
                       }}
                     />
                   </div>

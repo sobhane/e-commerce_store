@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { formatNumberWithDecimal } from "./utils";
 import { PAYMENT_METHODS } from "./constants";
+import { size } from "@prisma/client";
 
 const currency = z
   .string()
@@ -57,6 +58,7 @@ export const insertCartSchema = z.object({
   qty: z.number().int().nonnegative("Quantity must be at positive number"),
   image: z.string().min(1, "Image is required"),
   price: currency,
+  size: z.enum(["S", "M", "L", "XL", "DOUBLEXL"]),
 });
 
 export const cartSchema = z.object({
