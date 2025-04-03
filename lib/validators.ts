@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { formatNumberWithDecimal } from "./utils";
 import { PAYMENT_METHODS } from "./constants";
-import { size } from "@prisma/client";
 
 const currency = z
   .string()
@@ -91,3 +90,28 @@ export const paymentMethodSchema = z
     path: ["type"],
     message: "Invalid payment method",
   });
+
+//Schema for inserting order
+
+export const insertOrderSchema = z.object({
+  userId: z.string().min(1, "User is required"),
+  itemsprice: currency,
+  shippingPrice: currency,
+  totalPrice: currency,
+  paymentMethod: z.string().refine((data) => PAYMENT_METHODS.includes(data), {
+    message: "Invalid payment method",
+  }),
+  shippingAdressSchema: shippingAdressSchema,
+});
+
+//Schema for inserting an order item
+
+export const insertOrderItemSchema = z.object({
+  productId: z.string(),
+  slug: z.string(),
+  image: z.string(),
+  name: z.string(),
+  size: z.enum(["S", "M", "L", "XL", "DOUBLEXL"]),
+  price: currency,
+  qty: z.number(),
+});
