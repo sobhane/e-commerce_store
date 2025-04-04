@@ -51,7 +51,7 @@ const ShippingAddressForm = ({ address }: { address: ShippingAdress }) => {
       }
       console.log(res)
     });
-    router.push("payment-method");
+    router.push("payment-methods");
   };
   return (
     <div className="max-w-md mx-auto space-y-4">
