@@ -5,7 +5,7 @@ import { formatErrors } from "../utils";
 import { auth } from "@/auth";
 import { getMyCart } from "./cart.action";
 import { getUserById } from "./user.action";
-import { insertOrderSchema, insertOrderItemSchema } from "../validators";
+import { insertOrderSchema } from "../validators";
 import { prisma } from "@/db/prisma";
 import { CartItemSchema } from "@/types";
 
@@ -52,10 +52,10 @@ export const createOrder = async () => {
       shippingPrice: cart.shippingPrice,
       totalPrice: cart.totalPrice,
     });
-    
+
     //Create transaction to create order and oder items in database
 
-    await prisma.$transaction(async (tx) => {
+    const insertedOrderId = await prisma.$transaction(async (tx) => {
       const insertedOrder = await tx.order.create({
         data: order,
       });
@@ -70,7 +70,22 @@ export const createOrder = async () => {
           },
         });
       }
+
+      //Clear the cart after creating the order
+      await tx.cart.update({
+        where: { id: cart.id },
+        data: { items: [], itemsPrice: 0, shippingPrice: 0, totalPrice: 0 },
+      });
+      return insertedOrder.id;
     });
+
+    if (!insertedOrderId) throw new Error("Order not created");
+
+    return {
+      seccess: true,
+      message: "Order created successfully",
+      redirectTo: `/orders/${insertedOrderId}`,
+    };
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
