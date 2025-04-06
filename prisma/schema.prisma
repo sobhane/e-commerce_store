@@ -138,7 +138,7 @@ model Order {
   DeliveredAt     DateTime?   @db.Timestamp(6)
   createdAt       DateTime    @default(now()) @db.Timestamp(6)
   user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Orderitems      OrderItem[]
+  orderitems      OrderItem[]
 }
 
 model OrderItem {
