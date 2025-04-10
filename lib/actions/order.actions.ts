@@ -8,6 +8,7 @@ import { getUserById } from "./user.action";
 import { insertOrderSchema } from "../validators";
 import { prisma } from "@/db/prisma";
 import { CartItemSchema } from "@/types";
+import { PAGE_SIZE } from "../constants";
 
 // Create order and create order items
 export const createOrder = async () => {
@@ -100,8 +101,36 @@ export const getOrderById = async (orderId: string) => {
     where: { id: orderId },
     include: {
       orderitems: true,
-      user: {select: { name: true, email: true } },
+      user: { select: { name: true, email: true } },
     },
   });
   return prismaToJS(data);
+};
+
+// Get user's orders
+export const getMyOrders = async (
+  limit = PAGE_SIZE,
+  page: number
+) => {
+  const session = await auth();
+  if (!session) throw new Error("User is not authenticated");
+
+  const userId = session?.user?.id;
+  if (!userId) throw new Error("User ID not found");
+
+  const data = await prisma.order.findMany({
+    where: { userId },
+    include: { orderitems: true },
+    orderBy: { createdAt: "desc" },
+    skip: (page - 1) * limit,
+    take: limit,
+  });
+
+  const dataCount = await prisma.order.count({
+    where: { userId },
+  })
+  return {
+    data:prismaToJS(data),
+    totalPages: Math.ceil(dataCount / limit),    
+  };
 };
