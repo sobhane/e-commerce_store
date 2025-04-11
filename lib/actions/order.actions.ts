@@ -108,10 +108,13 @@ export const getOrderById = async (orderId: string) => {
 };
 
 // Get user's orders
-export const getMyOrders = async (
+export const getMyOrders = async ({
   limit = PAGE_SIZE,
-  page: number
-) => {
+  page,
+}: {
+  page: number;
+  limit?: number;
+}) => {
   const session = await auth();
   if (!session) throw new Error("User is not authenticated");
 
@@ -128,9 +131,9 @@ export const getMyOrders = async (
 
   const dataCount = await prisma.order.count({
     where: { userId },
-  })
+  });
   return {
-    data:prismaToJS(data),
-    totalPages: Math.ceil(dataCount / limit),    
+    data: prismaToJS(data),
+    totalPages: Math.ceil(dataCount / limit),
   };
 };

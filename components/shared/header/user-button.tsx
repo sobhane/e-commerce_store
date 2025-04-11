@@ -13,7 +13,7 @@ import { UserIcon } from "lucide-react";
 
 const UserButton = async () => {
   const session = await auth();
- 
+
   if (!session) {
     return (
       <Button asChild>
@@ -50,6 +50,11 @@ const UserButton = async () => {
               </div>
             </div>
           </DropdownMenuLabel>
+          <DropdownMenuItem>
+            <Link href={"/user/orders"} className="w-full">
+              User Profile
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem className="p-0 mb-1">
             <form className="w-full">
               <Button
