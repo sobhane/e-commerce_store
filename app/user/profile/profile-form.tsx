@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { updateProfile } from "@/lib/actions/user.action";
 import { updateProfileSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
-import { useFormState } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -30,7 +30,30 @@ const ProfileForm = () => {
 
   const { toast } = useToast();
 
-  const onSubmit = async () => {};
+  const onSubmit = async (values: z.infer<typeof updateProfileSchema>) => {
+    const res = await updateProfile(values);
+
+    if (!res.success) {
+      toast({
+        variant: "destructive",
+        description: res.message,
+      });
+    }
+
+    const newSession = {
+      ...session,
+      user: {
+        ...session?.user,
+        name: values.name,
+      },
+    };
+
+    await update(newSession);
+
+    toast({
+      description: res.message,
+    });
+  };
 
   return (
     <Form {...form}>
@@ -79,7 +102,7 @@ const ProfileForm = () => {
           className="button col-span-2 w-full"
           disabled={form.formState.isSubmitting}
         >
-            {form.formState.isSubmitting ? "Submitting...":"Update Profile"}
+          {form.formState.isSubmitting ? "Submitting..." : "Update Profile"}
         </Button>
       </form>
     </Form>
