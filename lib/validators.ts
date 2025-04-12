@@ -94,12 +94,12 @@ export const paymentMethodSchema = z
 //Schema for inserting order
 
 export const insertOrderSchema = z.object({
-  userId: z.string().min(1, 'User is required'),
+  userId: z.string().min(1, "User is required"),
   itemPrice: currency,
   shippingPrice: currency,
   totalPrice: currency,
   paymentMethod: z.string().refine((data) => PAYMENT_METHODS.includes(data), {
-    message: 'Invalid payment method',
+    message: "Invalid payment method",
   }),
   shippingAddress: shippingAdressSchema,
 });
@@ -114,4 +114,11 @@ export const insertOrderItemSchema = z.object({
   size: z.enum(["S", "M", "L", "XL", "DOUBLEXL"]),
   price: currency,
   qty: z.number(),
+});
+
+//Schema for updating the user profile
+
+export const updateProfileSchema = z.object({
+  name: z.string().min(3,"Name must be at least 3 characters"),
+  email: z.string().min(5,"Email must be at least 3 characters"),
 });
