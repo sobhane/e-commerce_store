@@ -89,6 +89,7 @@ const PlaceOrderPage = async () => {
                   <TableRow>
                     <TableHead>Item</TableHead>
                     <TableHead>Quantity</TableHead>
+                    <TableHead>size</TableHead>
                     <TableHead>Price</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -111,19 +112,20 @@ const PlaceOrderPage = async () => {
                         </Link>
                       </TableCell>
                       <TableCell>{item.qty}</TableCell>
+                      <TableCell>{item.size}</TableCell>
                       <TableCell>{item.price}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
 
-              <div className="mt-3 flex justify-end">
+              {/* <div className="mt-3 flex justify-end">
                 <Link href="/payment-methods" className="text-blue-500">
                   <Button variant="outline" className="w-full">
                     Edit
                   </Button>
                 </Link>
-              </div>
+              </div> */}
             </CardContent>
           </Card>
         </div>
