@@ -75,7 +75,6 @@ export function formatId(uuid: string) {
   return `...${uuid.substring(uuid.length - 6)}`;
 }
 
-console.log(formatId("aa04803c-9419-4136-acd6-acd16ffea2bc"));
 
 // Format date and time
 
