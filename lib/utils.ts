@@ -70,11 +70,18 @@ export function formatCurrency(amount: number | string | null) {
   }
 }
 
+// Format Number
+
+const NUMBER_FORMATTER = new Intl.NumberFormat("en-US");
+
+export function formatNumber(number: number) {
+  return NUMBER_FORMATTER.format(number);
+}
+
 // Shorten UUID
 export function formatId(uuid: string) {
   return `...${uuid.substring(uuid.length - 6)}`;
 }
-
 
 // Format date and time
 
