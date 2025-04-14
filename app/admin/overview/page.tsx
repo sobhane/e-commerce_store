@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
