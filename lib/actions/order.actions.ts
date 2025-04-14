@@ -10,6 +10,7 @@ import { prisma } from "@/db/prisma";
 import { CartItemSchema } from "@/types";
 import { PAGE_SIZE } from "../constants";
 import { Prisma } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 // Create order and create order items
 export const createOrder = async () => {
@@ -208,4 +209,20 @@ export async function getAllOrders({
     data,
     totalPages: Math.ceil(dataCount / limit),
   };
+}
+
+// Delete an Order
+
+export async function deleteOrder(orderId: string) {
+  try {
+    await prisma.order.delete({
+      where: { id: orderId },
+    });
+
+    revalidatePath("/admin/orders");
+    return { success: true, message: "order Deleted" };
+    
+  } catch (error) {
+    return { success: false, message: formatErrors(error) };
+  }
 }
