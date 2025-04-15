@@ -15,7 +15,7 @@ const ProductDetailPage = async (props: {
   const cart = await getMyCart();
 
   const product = await getProductBySlug(slug);
-  console.log(product)
+
   if (!product) notFound();
 
   return (
