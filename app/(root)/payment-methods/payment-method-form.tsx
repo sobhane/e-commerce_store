@@ -57,8 +57,8 @@ const PaymentMethodForm = ({
 
   return (
     <div className="max-w-md mx-auto space-y-4">
-      <h1 className="h2-bold mt-4">Payment Methods</h1>
-      <p>Please select the Payment method</p>
+      <h1 className="h2-bold mt-4">Modes de paiement</h1>
+      <p>Veuillez sélectionner le mode de paiement</p>
       <Form {...form}>
         <form
           method="post"

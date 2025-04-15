@@ -1,4 +1,3 @@
-
 import {
   Card,
   CardContent,
@@ -45,9 +44,9 @@ export default async function SignUpPage(props: {
               priority
             />
           </Link>
-          <CardTitle className="text-center">Create Account</CardTitle>
+          <CardTitle className="text-center">Créer un compte</CardTitle>
           <CardDescription className="text-center">
-            Enter your information bellow to sign up
+            Entrez vos informations ci-dessous pour vous inscrire
           </CardDescription>
         </CardHeader>
         <CardContent>

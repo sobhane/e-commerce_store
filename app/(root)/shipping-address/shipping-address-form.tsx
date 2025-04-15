@@ -56,7 +56,7 @@ const ShippingAddressForm = ({ address }: { address: ShippingAdress }) => {
   return (
     <div className="max-w-md mx-auto space-y-4">
       <h1 className="h2-bold mt-4">Shipping Address</h1>
-      <p>Please enter and address to ship to</p>
+      <p>Veuillez saisir l&apos;adresse de livraison</p>
       <Form {...form}>
         <form
           method="post"
@@ -76,7 +76,7 @@ const ShippingAddressForm = ({ address }: { address: ShippingAdress }) => {
                 >;
               }) => (
                 <FormItem>
-                  <FormLabel>Full Name</FormLabel>
+                  <FormLabel>Nom et prénom</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter full name" {...field} />
                   </FormControl>
@@ -120,7 +120,7 @@ const ShippingAddressForm = ({ address }: { address: ShippingAdress }) => {
                 >;
               }) => (
                 <FormItem>
-                  <FormLabel>city</FormLabel>
+                  <FormLabel>ville</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter city" {...field} />
                   </FormControl>
@@ -142,7 +142,7 @@ const ShippingAddressForm = ({ address }: { address: ShippingAdress }) => {
                 >;
               }) => (
                 <FormItem>
-                  <FormLabel>phoneNumber</FormLabel>
+                  <FormLabel>numéro de téléphone</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter phone Number" {...field} />
                   </FormControl>

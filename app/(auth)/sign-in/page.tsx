@@ -27,7 +27,6 @@ export default async function SignInPage(props: {
 
   const session = await auth();
 
- console.log(callbackUrl)
   if (session) {
     return redirect(callbackUrl || "/");
   }
@@ -45,7 +44,7 @@ export default async function SignInPage(props: {
               priority
             />
           </Link>
-          <CardTitle className="text-center">Inscription</CardTitle>
+          <CardTitle className="text-center">Se connecter</CardTitle>
           <CardDescription className="text-center">
             Connectez-vous à votre compte
           </CardDescription>

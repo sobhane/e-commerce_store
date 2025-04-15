@@ -20,7 +20,6 @@ import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Item } from "@radix-ui/react-dropdown-menu";
 
 const CartTable = ({ cart }: { cart?: CartSchema }) => {
   const router = useRouter();
@@ -28,10 +27,10 @@ const CartTable = ({ cart }: { cart?: CartSchema }) => {
   const [isPending, startTransition] = useTransition();
   return (
     <>
-      <h1 className="py-4 h2-bold">Shopping Cart</h1>
+      <h1 className="py-4 h2-bold">Panier</h1>
       {!cart || cart.items.length === 0 ? (
         <div>
-          Cart is empty.{" "}
+          Le panier est vide.{" "}
           <Link className="text-blue-500" href={"/"}>
             Go shopping
           </Link>
@@ -128,7 +127,7 @@ const CartTable = ({ cart }: { cart?: CartSchema }) => {
               <div className="pb-3 text-xl">
                 Subtotal ({cart.items.reduce((a, c) => a + c.qty, 0)}):
                 <span className="font-bold">
-                {formatCurrency(cart.itemsPrice)}
+                  {formatCurrency(cart.itemsPrice)}
                 </span>
               </div>
               <Button

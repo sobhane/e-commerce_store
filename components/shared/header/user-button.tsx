@@ -18,14 +18,14 @@ const UserButton = async () => {
     return (
       <Button asChild>
         <Link href="/sign-in">
-          <UserIcon /> Sign In
+          <UserIcon /> Se connecter
         </Link>
       </Button>
     );
   }
 
   const firstInitial = session.user?.name?.charAt(0).toUpperCase() ?? "U";
-console.log(session?.user?.role)
+
   return (
     <div className="flex gap-2 items-center">
       <DropdownMenu>
