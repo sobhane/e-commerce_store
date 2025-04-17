@@ -39,9 +39,9 @@ const ProductDetailPage = async (props: {
                   className="w-25 bg-green-200 text-green-700 rounded-full px-5 py-2"
                 />
               </div>
-              <p>
+              {/* <p>
                 {product.rating} of {product.numReviews} Reviews
-              </p>
+              </p> */}
             </div>
             <div className="mt-10">
               <p className="font-semibold">Description</p>
