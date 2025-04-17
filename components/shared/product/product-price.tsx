@@ -14,7 +14,7 @@ const ProductPrice = ({
   //Get the int/float
   const [int, dec] = stringValue.split(".");
 
-  return <p className={cn("text-2xl", className)}>
+  return <p className={cn("text-2xl", className) }>
     <span className="text-xs align-super">MAD</span>
     {int}
     <span className="text-xs align-super">.{dec}</span>

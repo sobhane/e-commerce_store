@@ -3,9 +3,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { APP_DESCRIPTION, APP_NAME, APP_URL } from "@/lib/constants";
 import { ThemeProvider } from "next-themes";
-import { Analytics } from "@vercel/analytics/react"
-import { Toaster } from "@/components/ui/toaster"
-
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning className={`${inter.className} antialiased`}>
+      <body
+        suppressHydrationWarning
+        className={`${inter.className} antialiased`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
@@ -32,7 +35,8 @@ export default function RootLayout({
           {children}
           <Toaster />
         </ThemeProvider>
-        <Analytics/>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
