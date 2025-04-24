@@ -4,7 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { paymentMethodSchema } from "@/lib/validators";
-import CheckoutSteps from "@/components/shared/checkout-steps";
+
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,9 +18,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Loader } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { updateUserPaymentMethod } from "@/lib/actions/user.action";
+import Link from "next/link";
 
 const PaymentMethodForm = ({
   preferredPaymentMethod,
@@ -49,10 +50,8 @@ const PaymentMethodForm = ({
         });
         return;
       }
-      router.push("/place-order")
-
+      router.push("/place-order");
     });
-
   };
 
   return (
@@ -99,7 +98,18 @@ const PaymentMethodForm = ({
               )}
             />
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-10">
+            <Link href={"/shipping-address"} >
+              <Button disabled={isPending} variant="outline" className="flex items-center gap-2">
+                {isPending ? (
+                  <Loader className="w-4 h-4 animate-spin" />
+                ) : (
+                  <ArrowLeft className="w-4 h-4" />
+                )}
+                retourner
+              </Button>
+            </Link>
+
             <Button type="submit" disabled={isPending}>
               {isPending ? (
                 <Loader className="w-4 h-4 animate-spin" />
