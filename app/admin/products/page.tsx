@@ -27,7 +27,7 @@ const AdminProductsPage = async (props: {
   const category = searchParams.category || "";
 
   const products = await getAllProducts({ query: searchText, page, category });
-  console.log(products);
+
   return (
     <div className="space-y-2">
       <div className="flex-between">
