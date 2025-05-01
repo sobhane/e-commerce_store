@@ -1,4 +1,4 @@
-import { getAllProducts } from "@/lib/actions/product.actions";
+import { getAllProducts, deleteProduct } from "@/lib/actions/product.actions";
 import { formatCurrency, formatId } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Pagination from "@/components/shared/pagination";
+import DeleteDialog from "@/components/shared/delete-dialog";
 
 const AdminProductsPage = async (props: {
   searchParams: Promise<{
@@ -42,7 +43,7 @@ const AdminProductsPage = async (props: {
             <TableHead>ID</TableHead>
             <TableHead>NAME</TableHead>
             <TableHead className="text-right">PRICE</TableHead>
-            <TableHead>Category</TableHead>
+            {/* <TableHead>Category</TableHead> */}
             <TableHead>STOCK</TableHead>
             <TableHead className="w-[100px]">ACTIONS</TableHead>
           </TableRow>
@@ -55,19 +56,21 @@ const AdminProductsPage = async (props: {
               <TableCell className="text-right">
                 {formatCurrency(product.price)}
               </TableCell>
-              <TableCell>{product.category}</TableCell>
+              {/* <TableCell>{product.category}</TableCell> */}
               <TableCell>{product.stock}</TableCell>
               <TableCell className="flex gap-1">
                 <Button asChild variant={"outline"} size={"sm"}>
                   <Link href={`/admin/products/${product.id}`}>Edit</Link>
                 </Button>
-                {/* <Button asChild variant={"destructive"}></Button> */}
+                <DeleteDialog action={deleteProduct} id={product.id}>
+                  
+                </DeleteDialog>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
         {products?.totalPages && products.totalPages > 1 && (
-            <Pagination page={page} totalPages={products.totalPages}/>
+          <Pagination page={page} totalPages={products.totalPages} />
         )}
       </Table>
     </div>
