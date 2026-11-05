@@ -1,3 +1,4 @@
+import { getStoreText } from "@/lib/store-language.server";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { signOutUser } from "@/lib/actions/user.action";
@@ -12,13 +13,14 @@ import {
 import { UserIcon } from "lucide-react";
 
 const UserButton = async () => {
+  const t = await getStoreText();
   const session = await auth();
 
   if (!session) {
     return (
-      <Button asChild>
+      <Button asChild variant="ghost">
         <Link href="/sign-in">
-          <UserIcon /> Se connecter
+          <UserIcon strokeWidth={1.5} /> {t("Se connecter", "Sign in")}
         </Link>
       </Button>
     );
@@ -33,7 +35,8 @@ const UserButton = async () => {
           <div className="flex items-center">
             <Button
               variant="ghost"
-              className="relativee w-8 h-8 rounded-full ml-2 flex items-center justify-center bg-gray-200"
+              aria-label={t("Ouvrir le menu du compte", "Open account menu")}
+              className="h-10 w-10 rounded-lg bg-muted text-foreground"
             >
               {firstInitial}
             </Button>
@@ -52,12 +55,12 @@ const UserButton = async () => {
           </DropdownMenuLabel>
           <DropdownMenuItem>
             <Link href={"/user/profile"} className="w-full">
-              Profile
+              {t("Mon profil", "My profile")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Link href={"/user/orders"} className="w-full">
-              Order History
+              {t("Mes commandes", "My orders")}
             </Link>
           </DropdownMenuItem>
           {session?.user?.role === "admin" && (
@@ -74,7 +77,7 @@ const UserButton = async () => {
                 variant="ghost"
                 onClick={signOutUser}
               >
-                Sign Out
+                {t("Se déconnecter", "Sign out")}
               </Button>
             </form>
           </DropdownMenuItem>

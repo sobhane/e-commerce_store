@@ -1,15 +1,8 @@
+import { getStoreLanguage, getStoreText } from "@/lib/store-language.server";
+import { storeText } from "@/lib/store-language";
 import { auth } from "@/auth";
 import CheckoutSteps from "@/components/shared/checkout-steps";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { getMyCart } from "@/lib/actions/cart.action";
 import { getUserById } from "@/lib/actions/user.action";
 import { formatCurrency } from "@/lib/utils";
@@ -20,137 +13,75 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import PlaceOrderForm from "./place-order";
 
-export const metadata: Metadata = {
-  title: "Place Order",
-  description: "Place your order",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getStoreText();
+  return { title: t("Vérifier la commande", "Review order") };
+}
 
-const PlaceOrderPage = async () => {
+export default async function PlaceOrderPage() {
+  const language = await getStoreLanguage();
+  const t = storeText(language);
   const cart = await getMyCart();
   const session = await auth();
-  const userid = session?.user?.id;
-
-  if (!userid) throw new Error("User not found");
-
-  const user = await getUserById(userid);
-
-  if (!cart || cart.items.length === 0) {
-    redirect("/cart");
-  }
-
+  const userId = session?.user?.id;
+  if (!userId) redirect("/sign-in");
+  const user = await getUserById(userId);
+  if (!cart || cart.items.length === 0) redirect("/cart");
   if (!user.address) redirect("/shipping-address");
-  if (!user.paymentMethod) redirect("/payment-method");
-
-  const userAddress = user.address as ShippingAdress;
+  if (!user.paymentMethod) redirect("/payment-methods");
+  const address = user.address as ShippingAdress;
 
   return (
     <>
       <CheckoutSteps current={3} />
-      <h1 className="py-4 text-2xl">Passer la commande</h1>
-      <div className="grid md:grid-cols-3 md:gap-5">
-        <div className="md:col-span-2 overflow-x-auto space-y-4">
-          <Card>
-            <CardContent className="p-4 gap-4">
-              <h2 className="text-xl pb-4">Address</h2>
-              <p>{userAddress.fullName}</p>
-              <p>
-                {userAddress.streetAddress}, {userAddress.city},{" "}
-                {userAddress.phoneNumber}
-              </p>
-              <div className="mt-3 flex justify-end">
-                <Link href="/shipping-address" className="text-blue-500">
-                  <Button variant="outline" className="w-full">
-                    Edit
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4 gap-4">
-              <h2 className="text-xl pb-4">Mode de paiement</h2>
-              <p>{user.paymentMethod}</p>
-
-              <div className="mt-3 flex justify-end">
-                <Link href="/payment-methods" className="text-blue-500">
-                  <Button variant="outline" className="w-full">
-                    Edit
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4 gap-4">
-              <h2 className="text-xl pb-4">les articles Commandés</h2>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Produits</TableHead>
-                    <TableHead>Quantité</TableHead>
-                    <TableHead>size</TableHead>
-                    <TableHead>Prix</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {cart.items.map((item) => (
-                    <TableRow key={item.slug}>
-                      <TableCell className="">
-                        <Link
-                          href={`/product/${item.slug}`}
-                          className="flex items-center space-x-2"
-                        >
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            width={50}
-                            height={50}
-                            className="rounded-md"
-                          />
-                          <span className="ml-2">{item.name}</span>
-                        </Link>
-                      </TableCell>
-                      <TableCell>{item.qty}</TableCell>
-                      <TableCell>{item.size}</TableCell>
-                      <TableCell>{item.price}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-
-              {/* <div className="mt-3 flex justify-end">
-                <Link href="/payment-methods" className="text-blue-500">
-                  <Button variant="outline" className="w-full">
-                    Edit
-                  </Button>
-                </Link>
-              </div> */}
-            </CardContent>
-          </Card>
+      <p className="archive-rule">{t("Dernière étape", "Final step")}</p>
+      <h1 className="mb-8 mt-4 text-3xl font-medium sm:text-4xl">{t("Vérifier la commande", "Review order")}</h1>
+      <div className="grid items-start gap-8 lg:grid-cols-[1fr_360px] lg:gap-12">
+        <div className="min-w-0 space-y-6">
+          <section className="rounded-xl border bg-card p-6">
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <h2 className="text-lg font-medium">{t("Adresse de livraison", "Shipping address")}</h2>
+              <Button asChild variant="link" className="h-auto p-0"><Link href="/shipping-address">{t("Modifier", "Edit")}</Link></Button>
+            </div>
+            <p className="text-sm leading-7">{address.fullName}</p>
+            <p className="text-sm leading-7 text-muted-foreground">{address.streetAddress}, {address.city}</p>
+            <p className="text-sm leading-7 tabular-nums text-muted-foreground">{address.phoneNumber}</p>
+          </section>
+          <section className="rounded-xl border bg-card p-6">
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <h2 className="text-lg font-medium">{t("Mode de paiement", "Payment method")}</h2>
+              <Button asChild variant="link" className="h-auto p-0"><Link href="/payment-methods">{t("Modifier", "Edit")}</Link></Button>
+            </div>
+            <p className="text-sm text-muted-foreground">{user.paymentMethod === "CashOnDelivery" ? t("Paiement à la livraison", "Cash on delivery") : user.paymentMethod}</p>
+          </section>
+          <section className="rounded-xl border bg-card p-6">
+            <h2 className="mb-4 text-lg font-medium">{t("Vos maillots", "Your jerseys")}</h2>
+            <ul className="divide-y">
+              {cart.items.map((item) => (
+                <li key={`${item.productId}-${item.size}`} className="flex items-start gap-4 py-4">
+                  <Link href={`/product/${item.slug}`} className="relative h-20 w-16 shrink-0 overflow-hidden rounded-lg bg-muted">
+                    <Image src={item.image} alt={item.name} fill sizes="64px" className="object-contain" />
+                  </Link>
+                  <div className="min-w-0 flex-1">
+                    <Link href={`/product/${item.slug}`} className="text-sm font-medium hover:underline">{item.name}</Link>
+                    <p className="mt-2 text-xs leading-5 text-muted-foreground">{t("Taille ", "Size ")}{item.size === "DOUBLEXL" ? "2XL" : item.size}{t(" · Quantité ", " · Quantity ")}{item.qty}</p>
+                    <p className="mt-2 text-sm tabular-nums">{formatCurrency(Number(item.price) * item.qty, language)}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
-        <div>
-          <Card >
-            <CardContent className="p-4 gap-4 space-y-4">
-                <div className="flex justify-between">
-                    <div>Produits</div>
-                    <div>{formatCurrency(cart.itemsPrice)}</div>
-                </div>
-                <div className="flex justify-between">
-                    <div>Shipping Price</div>
-                    <div>{formatCurrency(cart.shippingPrice)}</div>
-                </div>
-                <div className="flex justify-between">
-                    <div>Total</div>
-                    <div>{formatCurrency(cart.totalPrice)}</div>
-                </div>
-                <PlaceOrderForm/>
-            </CardContent>
-          </Card>
-        </div>
+        <aside className="rounded-xl border bg-card p-6">
+          <h2 className="text-lg font-medium">{t("Récapitulatif", "Order summary")}</h2>
+          <dl className="my-6 space-y-4 text-sm">
+            <div className="flex justify-between gap-4"><dt className="text-muted-foreground">{t("Articles", "Items")}</dt><dd className="tabular-nums">{formatCurrency(cart.itemsPrice, language)}</dd></div>
+            <div className="flex justify-between gap-4"><dt className="text-muted-foreground">{t("Livraison", "Shipping")}</dt><dd className="tabular-nums">{Number(cart.shippingPrice) === 0 ? t("Offerte", "Free") : formatCurrency(cart.shippingPrice, language)}</dd></div>
+            <div className="flex justify-between gap-4 border-t pt-4 text-base font-medium"><dt>Total</dt><dd className="tabular-nums">{formatCurrency(cart.totalPrice, language)}</dd></div>
+          </dl>
+          <PlaceOrderForm />
+        </aside>
       </div>
     </>
   );
-};
-
-export default PlaceOrderPage;
+}

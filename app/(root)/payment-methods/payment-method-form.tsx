@@ -1,5 +1,6 @@
 "use client";
 
+import { useStoreText } from "@/components/shared/store-language-provider";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
@@ -28,6 +29,7 @@ const PaymentMethodForm = ({
 }: {
   preferredPaymentMethod: string | null;
 }) => {
+  const t = useStoreText();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -55,16 +57,16 @@ const PaymentMethodForm = ({
   };
 
   return (
-    <div className="max-w-md mx-auto space-y-4">
-      <h1 className="h2-bold mt-4">Modes de paiement</h1>
-      <p>Veuillez sélectionner le mode de paiement</p>
+    <div className="checkout-panel space-y-6">
+      <h1 className="h2-bold">{t("Mode de paiement", "Payment method")}</h1>
+      <p className="text-sm leading-6 text-muted-foreground">{t("Choisissez comment régler votre commande", "Choose how to pay for your order")}</p>
       <Form {...form}>
         <form
           method="post"
-          className="space-y-4"
+          className="space-y-6"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <div className="flex flex-col md:flex-row gap-5">
+          <div className="flex flex-col gap-6">
             <FormField
               control={form.control}
               name="type"
@@ -72,13 +74,14 @@ const PaymentMethodForm = ({
                 <FormItem className="space-y-3">
                   <FormControl>
                     <RadioGroup
+                      value={field.value}
                       onValueChange={field.onChange}
                       className="flex flex-col space-y-2"
                     >
                       {PAYMENT_METHODS.map((paymentMethod) => (
                         <FormItem
                           key={paymentMethod}
-                          className="flex items-center space-x-3 space-y-0"
+                          className="flex items-center gap-3 space-y-0 rounded-lg border p-4"
                         >
                           <FormControl>
                             <RadioGroupItem
@@ -87,7 +90,7 @@ const PaymentMethodForm = ({
                             />
                           </FormControl>
                           <FormLabel className="font-normal">
-                            {paymentMethod}
+                            {paymentMethod === "CashOnDelivery" ? t("Paiement à la livraison", "Cash on delivery") : paymentMethod}
                           </FormLabel>
                         </FormItem>
                       ))}
@@ -98,25 +101,25 @@ const PaymentMethodForm = ({
               )}
             />
           </div>
-          <div className="flex gap-10">
-            <Link href={"/shipping-address"} >
-              <Button disabled={isPending} variant="outline" className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-3">
+            <Button asChild variant="outline" className="h-12">
+              <Link href="/shipping-address">
                 {isPending ? (
                   <Loader className="w-4 h-4 animate-spin" />
                 ) : (
                   <ArrowLeft className="w-4 h-4" />
                 )}
-                retourner
-              </Button>
-            </Link>
+                {t("Retour", "Back")}
+              </Link>
+            </Button>
 
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" disabled={isPending} className="h-12 flex-1">
               {isPending ? (
                 <Loader className="w-4 h-4 animate-spin" />
               ) : (
                 <ArrowRight className="w-4 h-4" />
               )}
-              Continue
+              {t("Vérifier la commande", "Review order")}
             </Button>
           </div>
         </form>

@@ -1,4 +1,5 @@
 'use client';
+import { useStoreText } from "@/components/shared/store-language-provider";
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,6 +14,7 @@ import { useTheme } from 'next-themes';
 import { SunIcon, MoonIcon, SunMoon } from 'lucide-react';
 
 const ModeToggle = () => {
+  const t = useStoreText();
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
 
@@ -21,7 +23,7 @@ const ModeToggle = () => {
   }, []);
 
   if (!mounted) {
-    return null;
+    return <span className="block h-10 w-10" aria-hidden="true" />;
   }
 
   return (
@@ -29,37 +31,37 @@ const ModeToggle = () => {
       <DropdownMenuTrigger asChild>
         <Button
           variant='ghost'
-          className='focus-visible:ring-0 focus-visible:ring-offset-0'
+          size="icon" aria-label={t("Changer le thème", "Change theme")}
         >
           {theme === 'system' ? (
-            <SunMoon />
+            <SunMoon strokeWidth={1.5} />
           ) : theme === 'dark' ? (
-            <MoonIcon />
+            <MoonIcon strokeWidth={1.5} />
           ) : (
-            <SunIcon />
+            <SunIcon strokeWidth={1.5} />
           )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+        <DropdownMenuLabel>{t("Apparence", "Appearance")}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuCheckboxItem
           checked={theme === 'system'}
           onClick={() => setTheme('system')}
         >
-          System
+          {t("Système", "System")}
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           checked={theme === 'dark'}
           onClick={() => setTheme('dark')}
         >
-          Dark
+          {t("Sombre", "Dark")}
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           checked={theme === 'light'}
           onClick={() => setTheme('light')}
         >
-          Light
+          {t("Clair", "Light")}
         </DropdownMenuCheckboxItem>
       </DropdownMenuContent>
     </DropdownMenu>

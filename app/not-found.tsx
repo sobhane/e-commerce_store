@@ -1,32 +1,20 @@
 "use client";
 
+import { useStoreText } from "@/components/shared/store-language-provider";
 import { Button } from "@/components/ui/button";
 import { APP_NAME } from "@/lib/constants";
 import Image from "next/image";
+import Link from "next/link";
 
-const NotFoundPage = () => {
+export default function NotFoundPage() {
+  const t = useStoreText();
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <Image
-        src="/images/logo.jpg"
-        alt={`${APP_NAME} logo`}
-        height={150}
-        width={150}
-        priority
-      />
-      <div className="p-5 pb-2 rounded-lg shadow-lg text-center">
-        <h1 className="text-3xl font-bold mb-4">not found</h1>
-        <p className="text-lg">The page you are looking for does not exist.</p>
-        <Button
-          variant={"outline"}
-          className="mt-4"
-          onClick={() => (window.location.href = "/")}
-        >
-          Go back home
-        </Button>
-      </div>
+    <div className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center px-6 py-16 text-center">
+      <Image src="/images/logo.jpg" alt={APP_NAME} height={80} width={80} className="mb-8 rounded-xl" />
+      <p className="archive-rule">{t("Page introuvable", "Page not found")}</p>
+      <h1 className="mb-4 mt-5 text-3xl font-medium">{t("Cette pièce manque à la collection", "This jersey is missing from the collection")}</h1>
+      <p className="text-sm leading-7 text-muted-foreground">{t("Cette page n’existe pas ou n’est plus disponible", "This page may have moved or been removed")}</p>
+      <Button asChild className="mt-8 h-12"><Link href="/">{t("Retour à la collection", "Back to the collection")}</Link></Button>
     </div>
   );
-};
-
-export default NotFoundPage;
+}

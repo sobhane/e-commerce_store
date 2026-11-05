@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import qs from "query-string";
+import type { StoreLanguage } from "./store-language";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -52,19 +53,24 @@ export function round2(value: number | string) {
   }
 }
 
-const CURRENCY_FORMATTER = new Intl.NumberFormat("en-US", {
+const MAD_FORMAT: Intl.NumberFormatOptions = {
   currency: "MAD",
   style: "currency",
   minimumFractionDigits: 2,
-});
+};
+
+const CURRENCY_FORMATTERS = {
+  fr: new Intl.NumberFormat("fr-MA", MAD_FORMAT),
+  en: new Intl.NumberFormat("en-GB", { ...MAD_FORMAT, currencyDisplay: "code" }),
+};
 
 // Format currency using the formatter above
 
-export function formatCurrency(amount: number | string | null) {
+export function formatCurrency(amount: number | string | null, language: StoreLanguage = "fr") {
   if (typeof amount === "number") {
-    return CURRENCY_FORMATTER.format(amount);
+    return CURRENCY_FORMATTERS[language].format(amount);
   } else if (typeof amount === "string") {
-    return CURRENCY_FORMATTER.format(Number(amount));
+    return CURRENCY_FORMATTERS[language].format(Number(amount));
   } else {
     return "NaN";
   }

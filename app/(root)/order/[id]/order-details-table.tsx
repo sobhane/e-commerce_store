@@ -1,5 +1,7 @@
 "use client";
 
+import { useStoreLanguage } from "@/components/shared/store-language-provider";
+import { storeText } from "@/lib/store-language";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -29,6 +31,8 @@ const OrderDetailsTable = ({
   order: Order;
   isAdmin: boolean;
 }) => {
+  const language = useStoreLanguage();
+  const t = storeText(language);
   const {
     id,
     shippingAddress,
@@ -60,7 +64,7 @@ const OrderDetailsTable = ({
           })
         }
       >
-        {isPending ? "processing..." : "Mark As Delivered"}
+        {isPending ? t("Enregistrement…", "Saving…") : t("Marquer comme payée", "Mark as paid")}
       </Button>
     );
   };
@@ -82,32 +86,32 @@ const OrderDetailsTable = ({
           })
         }
       >
-        {isPending ? "processing..." : "Mark As Paid"}
+        {isPending ? t("Enregistrement…", "Saving…") : t("Marquer comme livrée", "Mark as delivered")}
       </Button>
     );
   };
 
   return (
     <>
-      <h1 className="py-4 text-2xl">Order {formatId(id)}</h1>
-      <div className="grid md:grid-cols-3 md:gap-5">
-        <div className="col-span-2 space-4-y overlow-x-auto">
+      <h1 className="mb-8 text-3xl font-medium">{t("Commande", "Order")} {formatId(id)}</h1>
+      <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
+        <div className="min-w-0 space-y-6 lg:col-span-2">
           <Card>
-            <CardContent className="p-4 gap-4">
-              <h2 className="text-xl pb-4">Payment Method</h2>
-              <p className="mb-2">{paymentMethod}</p>
+            <CardContent className="p-6">
+              <h2 className="text-xl pb-4">{t("Mode de paiement", "Payment method")}</h2>
+              <p className="mb-2">{paymentMethod === "CashOnDelivery" ? t("Paiement à la livraison", "Cash on delivery") : paymentMethod}</p>
               {isPaid ? (
                 <Badge variant="secondary">
-                  Paid at {formatDateTime(paidAt!).dateTime}
+                  {t("Payée le ", "Paid on ")}{formatDateTime(paidAt!).dateTime}
                 </Badge>
               ) : (
-                <Badge variant="destructive">Not paid</Badge>
+                <Badge variant="outline">{t("En attente de paiement", "Awaiting payment")}</Badge>
               )}
             </CardContent>
           </Card>
-          <Card className="my-2">
-            <CardContent className="p-4 gap-4">
-              <h2 className="text-xl pb-4">Shipping Address</h2>
+          <Card className="">
+            <CardContent className="p-6">
+              <h2 className="text-xl pb-4">{t("Adresse de livraison", "Shipping address")}</h2>
               <p>{shippingAddress.fullName}</p>
               <p className="mb-2">
                 {shippingAddress.streetAddress}, {shippingAddress.city} ,{" "}
@@ -115,23 +119,23 @@ const OrderDetailsTable = ({
               </p>
               {isDelivered ? (
                 <Badge variant="secondary">
-                  Delivered at {formatDateTime(DeliveredAt!).dateTime}
+                  {t("Livrée le ", "Delivered on ")}{formatDateTime(DeliveredAt!).dateTime}
                 </Badge>
               ) : (
-                <Badge variant="destructive">Not Delivered</Badge>
+                <Badge variant="outline">{t("En attente de livraison", "Awaiting delivery")}</Badge>
               )}
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="p-4 gap-4">
-              <h2 className="text-xl pb-4">Order Items</h2>
+            <CardContent className="p-6">
+              <h2 className="text-xl pb-4">{t("Vos maillots", "Your jerseys")}</h2>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Item</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    <TableHead>size</TableHead>
-                    <TableHead>Price</TableHead>
+                    <TableHead>{t("Article", "Item")}</TableHead>
+                    <TableHead>{t("Quantité", "Quantity")}</TableHead>
+                    <TableHead>{t("Taille", "Size")}</TableHead>
+                    <TableHead>{t("Prix", "Price")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -155,10 +159,10 @@ const OrderDetailsTable = ({
                         <span className="px-2">{item.qty}</span>
                       </TableCell>
                       <TableCell>
-                        <span className="px-2">{item.size}</span>
+                        <span className="px-2">{item.size === "DOUBLEXL" ? "2XL" : item.size}</span>
                       </TableCell>
                       <TableCell>
-                        <span className="text-right">{item.price}</span>
+                        <span className="text-right">{formatCurrency(item.price, language)}</span>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -169,19 +173,19 @@ const OrderDetailsTable = ({
         </div>
         <div>
           <Card>
-            <CardContent className="p-4 gap-4 space-y-4">
+            <CardContent className="space-y-4 p-6 tabular-nums">
               <div className="flex justify-between">
-                <div>Items</div>
-                <div>{formatCurrency(itemPrice)}</div>
+                <div>{t("Articles", "Items")}</div>
+                <div>{formatCurrency(itemPrice, language)}</div>
               </div>
 
               <div className="flex justify-between">
-                <div>Shipping</div>
-                <div>{formatCurrency(shippingPrice)}</div>
+                <div>{t("Livraison", "Shipping")}</div>
+                <div>{formatCurrency(shippingPrice, language)}</div>
               </div>
               <div className="flex justify-between">
                 <div>Total</div>
-                <div>{formatCurrency(totalPrice)}</div>
+                <div>{formatCurrency(totalPrice, language)}</div>
               </div>
               {/* Cash On delivery */}
               {isAdmin && !isPaid && paymentMethod === "CashOnDelivery" && (

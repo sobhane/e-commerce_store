@@ -1,156 +1,57 @@
 "use client";
 
+import { useStoreText } from "@/components/shared/store-language-provider";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { Plus, Minus, Loader } from "lucide-react";
+import { Plus, Minus, Loader, ShoppingBag } from "lucide-react";
 import { CartItemSchema, CartSchema } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import { useTheme } from "next-themes";
 import { addItemToCart, removeItemFromCart } from "@/lib/actions/cart.action";
 import { useState, useTransition } from "react";
 import Sizes from "./Size";
 
-enum sizes {
-  S = "S",
-  M = "M",
-  L = "L",
-  XL = "XL",
-  DOUBLEXL = "DOUBLEXL",
-}
-const AddToCart = ({
-  item,
-  cart,
-}: {
-  item: CartItemSchema;
-  cart?: CartSchema;
-}) => {
+export default function AddToCart({ item, cart }: { item: CartItemSchema; cart?: CartSchema }) {
+  const t = useStoreText();
   const [size, setSize] = useState("");
-
-  const { theme } = useTheme();
-  let stylecss = "";
-
-  if (theme === "light") {
-    stylecss = "bg-primary text-white hover:bg-primary-600";
-  } else if (theme === "dark") {
-    stylecss = "bg-primary text-black hover:bg-primary-600";
-  } else {
-    stylecss = "";
-  }
-
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const { toast } = useToast();
+  const existingItem = cart?.items.find((entry) => entry.productId === item.productId);
 
-  const [isPending, startTransition] = useTransition();
-  if (size) {
-    item.size = size as sizes;
-  }
-  const handleAddToCart = async () => {
+  function updateCart(remove = false) {
+    if (!size || isPending) return;
     startTransition(async () => {
-      const res = await addItemToCart(item, size);
-
-      if (!res.success) {
-        toast({
-          title: "Error",
-          description: res.message,
-          duration: 5000,
-          variant: "destructive",
-        });
-        return;
-      }
+      const result = remove
+        ? await removeItemFromCart(item.productId, size)
+        : await addItemToCart({ ...item, size: size as CartItemSchema["size"] }, size);
       toast({
-        title: "Added to cart",
-        description: res.message,
-        duration: 5000,
-        action: (
-          <ToastAction
-            className={stylecss}
-            altText="Go to cart"
-            onClick={() => router.push("/cart")}
-          >
-            Go to cart
-          </ToastAction>
-        ),
+        title: result.success ? (remove ? t("Panier mis à jour", "Cart updated") : t("Maillot ajouté au panier", "Jersey added to your cart")) : t("Impossible de modifier le panier", "Couldn’t update your cart"),
+        description: result.success ? item.name : result.message,
+        variant: result.success ? "default" : "destructive",
+        action: result.success ? <ToastAction altText={t("Voir le panier", "View cart")} onClick={() => router.push("/cart")}>{t("Voir le panier", "View cart")}</ToastAction> : undefined,
       });
     });
-  };
-
-  //Handle remove from cart
-  const handleRemoveFromCart = async () => {
-    startTransition(async () => {
-      const res = await removeItemFromCart(item.productId, size);
-      if (!res.success) {
-        toast({
-          title: "Error",
-          description: "Failed to remove item from cart",
-          duration: 5000,
-          variant: "destructive",
-        });
-        return;
-      }
-      toast({
-        title: "removed from cart",
-        description: res.message,
-        duration: 5000,
-        action: (
-          <ToastAction
-            className={stylecss}
-            altText="Go to cart"
-            onClick={() => router.push("/cart")}
-          >
-            Go to cart
-          </ToastAction>
-        ),
-      });
-    });
-
-    return;
-  };
-  const existItem =
-    cart && cart.items.find((i) => i.productId === item.productId);
-
-    console.log(size)
-  if (size === "") {
-    return <Sizes setSize={setSize} />;
   }
-  return existItem ? (
-    <>
-      <div className="my-3">
-        <Sizes setSize={setSize} />
-      </div>
-      <div className="flex gap-2">
-        <Button className="w-full" type="button" onClick={handleRemoveFromCart}>
-          {isPending ? (
-            <Loader className="h-4 w-4 animate-spin" />
-          ) : (
-            <Minus className="h-4 w-4" />
-          )}
+
+  return (
+    <div className="space-y-5" aria-busy={isPending}>
+      <Sizes value={size} setSize={setSize} disabled={isPending} />
+      <p className="text-xs text-muted-foreground" aria-live="polite">{size ? `${t("Taille sélectionnée", "Selected size")}: ${size === "DOUBLEXL" ? "2XL" : size}` : t("Sélectionnez votre taille pour ajouter ce maillot au panier", "Choose a size to add this jersey to your cart")}</p>
+      {existingItem && size ? (
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border p-3">
+          <span className="text-sm">{t("Dans votre panier", "In your cart")}</span>
+          <div className="flex items-center gap-4">
+            <Button variant="outline" size="icon" disabled={isPending} onClick={() => updateCart(true)} aria-label={t("Retirer un maillot", "Remove one jersey")}><Minus strokeWidth={1.5} /></Button>
+            <span className="min-w-4 text-center text-sm tabular-nums" aria-live="polite">{existingItem.qty}</span>
+            <Button variant="outline" size="icon" disabled={isPending} onClick={() => updateCart()} aria-label={t("Ajouter un maillot", "Add one jersey")}><Plus strokeWidth={1.5} /></Button>
+          </div>
+        </div>
+      ) : (
+        <Button className="h-12 w-full" disabled={!size || isPending} onClick={() => updateCart()}>
+          {isPending ? <Loader className="animate-spin" strokeWidth={1.5} /> : <ShoppingBag strokeWidth={1.5} />}{t("Ajouter au panier", "Add to cart")}
         </Button>
-        <span className="px-2">{existItem.qty}</span>
-        <Button className="w-full" type="button" onClick={handleAddToCart}>
-          {isPending ? (
-            <Loader className="h-4 w-4 animate-spin" />
-          ) : (
-            <Plus className="h-4 w-4" />
-          )}
-        </Button>
-      </div>
-    </>
-  ) : (
-    <>
-      <div className="my-3">
-        <Sizes setSize={setSize} />
-      </div>
-      <Button className="w-full" type="button" onClick={handleAddToCart}>
-        {isPending ? (
-          <Loader className="h-4 w-4 animate-spin" />
-        ) : (
-          <Plus className="h-4 w-4" />
-        )}{" "}
-        Add to cart
-      </Button>
-    </>
+      )}
+    </div>
   );
-};
-
-export default AddToCart;
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useStoreText } from "@/components/shared/store-language-provider";
 import { ShippingAdress } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 import { useTransition } from "react";
@@ -22,6 +23,7 @@ import { ArrowRight, Loader } from "lucide-react";
 import { updateUserAddress } from "@/lib/actions/user.action";
 
 const ShippingAddressForm = ({ address }: { address: ShippingAdress }) => {
+  const t = useStoreText();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -49,18 +51,17 @@ const ShippingAddressForm = ({ address }: { address: ShippingAdress }) => {
         });
         return;
       }
-      console.log(res)
+      router.push("/payment-methods");
     });
-    router.push("payment-methods");
   };
   return (
-    <div className="max-w-md mx-auto space-y-4">
-      <h1 className="h2-bold mt-4">Shipping Address</h1>
-      <p>Veuillez saisir l&apos;adresse de livraison</p>
+    <div className="checkout-panel space-y-6">
+      <h1 className="h2-bold">{t("Adresse de livraison", "Shipping address")}</h1>
+      <p className="text-sm leading-6 text-muted-foreground">{t("Où souhaitez-vous recevoir vos maillots ?", "Where should we deliver your jerseys?")}</p>
       <Form {...form}>
         <form
           method="post"
-          className="space-y-4"
+          className="space-y-6"
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <div className="flex flex-col">
@@ -76,9 +77,9 @@ const ShippingAddressForm = ({ address }: { address: ShippingAdress }) => {
                 >;
               }) => (
                 <FormItem>
-                  <FormLabel>Nom et prénom</FormLabel>
+                  <FormLabel>{t("Nom et prénom", "Full name")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter full name" {...field} />
+                    <Input autoComplete="name" placeholder={t("Nom et prénom", "Full name")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -98,9 +99,9 @@ const ShippingAddressForm = ({ address }: { address: ShippingAdress }) => {
                 >;
               }) => (
                 <FormItem>
-                  <FormLabel>Address</FormLabel>
+                  <FormLabel>{t("Adresse", "Street address")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter Address" {...field} />
+                    <Input autoComplete="street-address" placeholder={t("Rue, numéro et appartement", "Street, house number, and apartment")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -120,9 +121,9 @@ const ShippingAddressForm = ({ address }: { address: ShippingAdress }) => {
                 >;
               }) => (
                 <FormItem>
-                  <FormLabel>ville</FormLabel>
+                  <FormLabel>{t("Ville", "City")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter city" {...field} />
+                    <Input autoComplete="address-level2" placeholder={t("Votre ville", "Your city")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -142,9 +143,9 @@ const ShippingAddressForm = ({ address }: { address: ShippingAdress }) => {
                 >;
               }) => (
                 <FormItem>
-                  <FormLabel>numéro de téléphone</FormLabel>
+                  <FormLabel>{t("Numéro de téléphone", "Phone number")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter phone Number" {...field} />
+                    <Input type="tel" autoComplete="tel" placeholder="06 00 00 00 00" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -152,13 +153,13 @@ const ShippingAddressForm = ({ address }: { address: ShippingAdress }) => {
             />
           </div>
           <div className="flex gap-2">
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" disabled={isPending} className="h-12 w-full">
               {isPending ? (
                 <Loader className="w-4 h-4 animate-spin" />
               ) : (
                 <ArrowRight className="w-4 h-4" />
               )}
-              Continue
+              {t("Continuer vers le paiement", "Continue to payment")}
             </Button>
           </div>
         </form>

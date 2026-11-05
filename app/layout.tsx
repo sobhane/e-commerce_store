@@ -6,22 +6,28 @@ import { ThemeProvider } from "next-themes";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "@/components/ui/toaster";
+import { StoreLanguageProvider } from "@/components/shared/store-language-provider";
+import { getStoreLanguage, getStoreText } from "@/lib/store-language.server";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: `${APP_NAME}`,
-  description: APP_DESCRIPTION,
-  metadataBase: new URL("/", APP_URL),
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getStoreText();
+  return {
+    title: APP_NAME,
+    description: t(APP_DESCRIPTION, `Explore the ${APP_NAME} collection of football jerseys`),
+    metadataBase: new URL("/", APP_URL),
+  };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const language = await getStoreLanguage();
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={language} suppressHydrationWarning>
       <body
         suppressHydrationWarning
         className={`${inter.className} antialiased`}
@@ -32,8 +38,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
-          <Toaster />
+          <StoreLanguageProvider language={language}>
+            {children}
+            <Toaster />
+          </StoreLanguageProvider>
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />

@@ -1,24 +1,7 @@
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
+import { getStoreLanguage } from "@/lib/store-language.server";
 
-const ProductPrice = ({
-  value,
-  className,
-}: {
-  value: string;
-  className?: string;
-}) => {
-  //Ensure two decimal places
-  const price = Number(value)
-
-  const stringValue = price.toFixed(2);
-  //Get the int/float
-  const [int, dec] = stringValue.split(".");
-
-  return <p className={cn("text-2xl", className) }>
-    <span className="text-xs align-super">MAD</span>
-    {int}
-    <span className="text-xs align-super">.{dec}</span>
-  </p>;
-};
-
-export default ProductPrice;
+export default async function ProductPrice({ value, className }: { value: string; className?: string }) {
+  const language = await getStoreLanguage();
+  return <p className={cn("whitespace-nowrap text-base font-medium tabular-nums", className)}>{formatCurrency(value, language)}</p>;
+}
